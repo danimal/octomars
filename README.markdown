@@ -32,11 +32,11 @@ Octopress static blog:
     Enter the blog name and url. MarsEdit will fail to detect the blog settings
     and present you with a dialog, click on the **Edit Settings** button to continue.
     
-    !["MarsEdit blog settings detection fail dialog."](resources/Edit_Settings.png "Press the Edit Settings button")
+    !["MarsEdit blog settings detection fail dialog."](https://github.com/danimal/octomars/raw/master/resources/Edit_Settings.png "Press the Edit Settings button")
     
 3. You will be presented with a blog settings dialog.
 
-    !["MarsEdit blog settings dialog."](resources/Blog_Settings.png "MarsEdit blog settings dialog sample")
+    !["MarsEdit blog settings dialog."](https://github.com/danimal/octomars/raw/master/resources/Blog_Settings.png "MarsEdit blog settings dialog sample")
 
     To setup your Octopress static blog set the:
     
