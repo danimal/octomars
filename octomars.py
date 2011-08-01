@@ -86,10 +86,14 @@ def process_post(post, opts):
     if opts.generate:
         generate = subprocess.Popen('rake generate', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         g_stdout, g_stderr = generate.communicate()
+        #print 'generate stdout: ' + g_stdout
+        #print 'generate stderr: ' + g_stderr
     # rake deploy
-    if opts.generate:
+    if opts.deploy:
         deploy = subprocess.Popen('rake deploy', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         d_stdout, d_stderr = deploy.communicate()
+        #print 'deploy stdout: ' + d_stdout
+        #print 'deploy stderr: ' + d_stderr
     # go back to the directory we started in
     os.chdir(old_pwd)
 
@@ -103,7 +107,7 @@ def main():
     parser.add_option('--blog-root', action='store', dest='blog_root', default=None, help='The root directory of the Octopress repository.')
 
     (opts, args) = parser.parse_args()
-
+    
     # if we're not generating we're not deploying (I mean really, why are we running this 
     # without generating in the first place? Mostly for testing I guess.)
     if not opts.generate:
