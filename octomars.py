@@ -9,11 +9,6 @@ import sys
 
 post_file_format = '%s-%s.markdown'
 
-def dprint(inString):
-    '''debug print'''
-    if True:
-        print inString
-
 def find_blog_root(inFilePath):
     """find the path of the blog repository so it can be known where to run commands and put files."""
     blog_root = None
@@ -99,15 +94,19 @@ def process_post(post, opts):
 
 def main():
     """The main functionality and entry point for OctoMars."""
-    parser = optparse.OptionParser(usage='Publish blog posts from MarsEdit in the Octopress blog system.')
+    parser = optparse.OptionParser(usage='Publish blog posts from MarsEdit in the Octopress blog system.\n\n%prog [options] FILE_1 FILE_2 ... FILE_N')
     parser.add_option('--no-generate', action='store_false', dest='generate', default=True, help='Do not generate static pages. Implies --no-deploy.')
     parser.add_option('--no-deploy', action='store_false', dest='deploy', default=True, help='Do not deploy after generating static pages.')
     parser.add_option('--commit', action='store_true', dest='commit', default=False, help='Add and commit file to git repo.')
     parser.add_option('--push', action='store_true', dest='push', default=False, help='Push git repo to the origin. Implies --commit.')
-    parser.add_option('--blog-root', action='store', dest='blog_root', default=None, help='The root directory of the Octopress repository.')
+    parser.add_option('--blog-root', action='store', metavar='DIR', dest='blog_root', default=None, help='The root directory of the Octopress repository.')
 
     (opts, args) = parser.parse_args()
     
+    if not args:
+        parser.print_help()
+        return 1
+
     # if we're not generating we're not deploying (I mean really, why are we running this 
     # without generating in the first place? Mostly for testing I guess.)
     if not opts.generate:
