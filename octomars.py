@@ -144,6 +144,7 @@ def main():
     # work on all files passed in
     for post in args:
         process_post(post, opts)
+        process_post(os.path.abspath(post), opts)
     
     return 0
 
