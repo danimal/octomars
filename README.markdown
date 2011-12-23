@@ -8,12 +8,22 @@ Use [MarsEdit](http://www.red-sweater.com/marsedit/) to publish to the
 This script is fairly simple and was written to scratch an itch. Any and
 all contributions will be considered.
 
+## Requirements
+
+Octomars requires the gitpython module. Install it with:
+
+    sudo easy_install gitpython
+
 ## Installing OctoMars
 
 To install octomars on your system run the following from the repository root
 that you've cloned:
 
     python ./setup.py install
+
+If you get an error with the above command try installing with `sudo`:
+
+    sudo python ./setup.py install
 
 ## Configuring MarsEdit
 
