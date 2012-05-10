@@ -34,11 +34,19 @@ import subprocess
 import sys
 
 post_file_format = '%s-%s.markdown'
+_DEBUG = False
+
+def doLog(inMessage):
+    """print a message if debugging is turned on."""
+    if _DEBUG:
+        print "%s : %s" (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), inMessage)
 
 def find_blog_root(inFilePath):
     """find the path of the blog repository so it can be known where to run commands and put files."""
+    doLog(inFilePath)
     blog_root = None
     (dir_path, file_name) = os.path.split(inFilePath)
+    doLog("***%s***" % dir_path)
     # confirm a source directory as a parent of both _posts and where this file comes from
     if dir_path.count('source'):
         # get the part of the path before 'source'
@@ -82,6 +90,8 @@ def process_post(post, opts):
         # we have a good file to use, change the title
         title += ' %s' % count
     # create a new post with 'rake new_post'
+    doLog(title)
+    doLog("rake new_post['%s']" % title
     new_post = subprocess.Popen("rake new_post['%s']" % title, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     n_stdout, n_stderr = new_post.communicate()
     if n_stderr:
@@ -107,14 +117,14 @@ def process_post(post, opts):
     if opts.generate:
         generate = subprocess.Popen('rake generate', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         g_stdout, g_stderr = generate.communicate()
-        #print 'generate stdout: ' + g_stdout
-        #print 'generate stderr: ' + g_stderr
+        doLog('generate stdout: ' + g_stdout)
+        doLog('generate stderr: ' + g_stderr)
     # rake deploy
     if opts.deploy:
         deploy = subprocess.Popen('rake deploy', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         d_stdout, d_stderr = deploy.communicate()
-        #print 'deploy stdout: ' + d_stdout
-        #print 'deploy stderr: ' + d_stderr
+        doLog('deploy stdout: ' + d_stdout)
+        doLog('deploy stderr: ' + d_stderr)
     # go back to the directory we started in
     os.chdir(old_pwd)
 
@@ -126,12 +136,17 @@ def main():
     parser.add_option('--commit', action='store_true', dest='commit', default=False, help='Add and commit file to git repo.')
     parser.add_option('--push', action='store_true', dest='push', default=False, help='Push git repo to the origin. Implies --commit.')
     parser.add_option('--blog-root', action='store', metavar='DIR', dest='blog_root', default=None, help='The root directory of the Octopress repository.')
+    parser.add_option('--debug', action='store_true', dest='debug', default=False, help='Print debug messages at run time.')
 
     (opts, args) = parser.parse_args()
     
     if not args:
         parser.print_help()
         return 1
+        
+    if opts.debug:
+        _DEBUG = True
+        doLog("Debugging enabled")
 
     # if we're not generating we're not deploying (I mean really, why are we running this 
     # without generating in the first place? Mostly for testing I guess.)
@@ -143,7 +158,6 @@ def main():
     
     # work on all files passed in
     for post in args:
-        process_post(post, opts)
         process_post(os.path.abspath(post), opts)
     
     return 0
