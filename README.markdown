@@ -50,8 +50,8 @@ Octopress static blog:
 
     To setup your Octopress static blog set the:
     
-    * **System Name** pulldown to **Other**
-    * **System API** pulldown to **Blosxom API**
+    * _System Name_ pulldown to _Other_
+    * _System API_ pulldown to _Blosxom API_
     * Choose your sources/_marsedit directory as the Blosxom folder
     * In the last text entry box enter a command like this to call octomars:
         
