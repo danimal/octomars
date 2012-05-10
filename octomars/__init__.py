@@ -38,9 +38,21 @@ _DEBUG = False
 
 def doLog(inMessage):
     """print a message if debugging is turned on."""
+    global _DEBUG
     if _DEBUG:
-        print "%s : %s" (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), inMessage)
+        print "%s : %s" % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), inMessage)
 
+def find_rake_binary(inPath):
+    """given our blog root path find out if we need to use the rvm binary for rake"""
+    rake_path = "rake" # just use the shell path mechanism by default
+    
+    ## look for an .rvmrc file in our blog root. If it's there use ~/.rvm/bin/rake_bin
+    #if os.path.exists(os.path.join(inPath, ".rvmrc")):
+    #    source_path = os.path.expanduser("~/.rvm/scripts/rvm")
+    #    if os.path.exists(source_path):
+    #        rake_path = "source %s && %s" % (source_path, rake_path)
+    return rake_path
+    
 def find_blog_root(inFilePath):
     """find the path of the blog repository so it can be known where to run commands and put files."""
     doLog(inFilePath)
@@ -70,6 +82,10 @@ def process_post(post, opts):
         opts.blog_root = find_blog_root(post)
     old_pwd = os.getcwd()
     os.chdir(opts.blog_root)
+
+    rake_bin = find_rake_binary(opts.blog_root)
+    doLog("Using rake binary: %s" % rake_bin)
+    
     # grab the post title as the first line from the file
     lines = open(post, 'r').readlines()
     title = lines.pop(0).rstrip()
@@ -91,10 +107,11 @@ def process_post(post, opts):
         title += ' %s' % count
     # create a new post with 'rake new_post'
     doLog(title)
-    doLog("rake new_post['%s']" % title
-    new_post = subprocess.Popen("rake new_post['%s']" % title, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    cmd = "%s new_post['%s']" % (rake_bin, title)
+    doLog(cmd)
+    new_post = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     n_stdout, n_stderr = new_post.communicate()
-    if n_stderr:
+    if new_post.returncode != 0:
         print "ERROR: new post generation failed\n%s" % n_stderr
         sys.exit(1)
     # grab the file name from the rake process
@@ -115,13 +132,13 @@ def process_post(post, opts):
             repo.remotes.origin.push()
     # rake generate
     if opts.generate:
-        generate = subprocess.Popen('rake generate', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        generate = subprocess.Popen('%s generate' % rake_bin, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         g_stdout, g_stderr = generate.communicate()
         doLog('generate stdout: ' + g_stdout)
         doLog('generate stderr: ' + g_stderr)
     # rake deploy
     if opts.deploy:
-        deploy = subprocess.Popen('rake deploy', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        deploy = subprocess.Popen('%s deploy' % rake_bin, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         d_stdout, d_stderr = deploy.communicate()
         doLog('deploy stdout: ' + d_stdout)
         doLog('deploy stderr: ' + d_stderr)
@@ -130,6 +147,7 @@ def process_post(post, opts):
 
 def main():
     """The main functionality and entry point for OctoMars."""
+    global _DEBUG
     parser = optparse.OptionParser(usage='Publish blog posts from MarsEdit in the Octopress blog system.\n\n%prog [options] FILE_1 FILE_2 ... FILE_N')
     parser.add_option('--no-generate', action='store_false', dest='generate', default=True, help='Do not generate static pages. Implies --no-deploy.')
     parser.add_option('--no-deploy', action='store_false', dest='deploy', default=True, help='Do not deploy after generating static pages.')
