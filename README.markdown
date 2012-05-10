@@ -49,7 +49,6 @@ Octopress static blog:
     !["MarsEdit blog settings dialog."](https://github.com/danimal/octomars/raw/master/resources/Blog_Settings.png "MarsEdit blog settings dialog sample")
 
     To setup your Octopress static blog set the:
-    
     * _System Name_ pulldown to _Other_
     * _System API_ pulldown to _Blosxom API_
     * Choose your sources/_marsedit directory as the Blosxom folder
@@ -57,7 +56,7 @@ Octopress static blog:
         
             /usr/local/bin/octomars --commit --push %@
     
-        Be sure to set the path to your octomars install location and to adjust the
-        parameters to suit your needs (remove git commands, don't deploy the
-        static files, etc.).
+    Be sure to set the path to your octomars install location and to adjust the
+    parameters to suit your needs (remove git commands, don't deploy the
+    static files, etc.).
 
