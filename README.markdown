@@ -1,5 +1,10 @@
 # OctoMars
 
+# NOTICE
+
+OctoMars is no longer supported and has reached its end of life. 
+If another maintainer is interested contact me to take over.
+
 ## About
 
 Use [MarsEdit](http://www.red-sweater.com/marsedit/) to publish to the 
